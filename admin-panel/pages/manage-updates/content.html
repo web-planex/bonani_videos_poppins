@@ -1,0 +1,62 @@
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>Updates </h2>
+    </div>
+
+    <!-- Vertical Layout -->
+    <div class="row">
+        <div class="col-lg-6 col-md-6">
+            <div class="card">
+                <div class="header">
+                    <h2>Check For New Updates</h2>
+                    <!-- <div>This system allows to update your site automatically, or download the script updates from our servers.</div> -->
+                </div>
+                <div class="body">
+                    <div class="alert alert-info">
+                        Your Current version <?php echo $pt->script_version; ?>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <div class="card updates-layout <?php echo (($pt->version_info['success'] == 0 ) ? 'hide' : '')?> ">
+                <div class="header">
+                    <h2>New update is available! </h2>
+                </div>
+                <div class="body">
+                    <div class="updates text-center">															
+                        <h3> <?php echo $pt->version_info['latest_version'] ?></h3>
+                        <button class="btn btn-primary bg-teal waves-effect waves-light m-t-10 run-update" onclick="PT_RunUpdates()">Install Updates</button>
+                    </div>                                        
+                    <br><br>
+                    <div>
+                        "Install updates" button will download and automatically update your site to latest version(s). <span class="help-block red" style="color: red">Note: "Install updates" will repalce and overwrite all your code modifications. <br>Please use the manual process (download button).<br>Make sure to create a backup before starting the update process.</span><br>
+                    </div>                     
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <!-- #END# Vertical Layout -->
+    <script>
+
+        function PT_RunUpdates() {
+
+            $('.run-update').text('Updating, Please wait..');
+            $.get('{{LINK aj/updater}}', {f: 'run_updater'}, function (data) {
+                if (data.status == 200) {
+                    alert('Your site was updated, please refresh your page and clean your browser cache.');
+                    window.location.href = "<?php echo $pt->config->site_url; ?>/update.php?updated";
+                    $('.updates-layout').addClass('hidden');
+                } else if (data.status == 300) {
+                    //alert('Your site is up to date.');
+                } else if (data.status == 400) {
+                    //alert(data.ERROR_NAME);
+                } else {
+                    //alert('Error while connecting to server, please check your details');
+                }
+                $('.run-update').text('Install Updates');
+            });
+        }
+    </script>

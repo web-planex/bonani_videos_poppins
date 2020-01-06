@@ -1,4 +1,5 @@
 <?php
+
 // +------------------------------------------------------------------------+
 // | @author Deen Doughouz (DoughouzForest)
 // | @author_url 1: http://www.playtubescript.com
@@ -33,7 +34,7 @@ function PT_LoadPage($page_url = '', $data = array(), $set_lang = true) {
                 }, $page_content);
             } else {
                 $object_to_replace = "{{" . $key . "}}";
-                $page_content      = str_replace($object_to_replace, $replace, $page_content);
+                $page_content = str_replace($object_to_replace, $replace, $page_content);
             }
         }
     }
@@ -49,6 +50,7 @@ function PT_LoadPage($page_url = '', $data = array(), $set_lang = true) {
     }, $page_content);
     return $page_content;
 }
+
 function PT_LoadAdminPage($page_url = '', $data = array(), $set_lang = true) {
     global $pt, $lang_array, $config, $db;
     $page = './admin-panel/pages/' . $page_url . '.html';
@@ -74,7 +76,7 @@ function PT_LoadAdminPage($page_url = '', $data = array(), $set_lang = true) {
                 }, $page_content);
             } else {
                 $object_to_replace = "{{" . $key . "}}";
-                $page_content      = str_replace($object_to_replace, $replace, $page_content);
+                $page_content = str_replace($object_to_replace, $replace, $page_content);
             }
         }
     }
@@ -90,10 +92,12 @@ function PT_LoadAdminPage($page_url = '', $data = array(), $set_lang = true) {
     }, $page_content);
     return $page_content;
 }
+
 function PT_Link($string) {
     global $site_url;
     return $site_url . '/' . $string;
 }
+
 function PT_Slug($string, $video_id) {
     global $pt;
     if ($pt->config->seo_link != 'on') {
@@ -110,6 +114,7 @@ function PT_Slug($string, $video_id) {
     ));
     return $slug . '_' . $video_id . '.html';
 }
+
 function PT_URLSlug($string, $id) {
     global $pt;
     $slug = url_slug($string, array(
@@ -123,17 +128,20 @@ function PT_URLSlug($string, $id) {
     ));
     return $slug . '_' . $id . '.html';
 }
+
 function PT_LoadAdminLinkSettings($link = '') {
     global $site_url;
     return $site_url . '/admin-cp/' . $link;
 }
+
 function PT_LoadAdminLink($link = '') {
     global $site_url;
     return $site_url . '/admin-panel/' . $link;
 }
+
 function url_slug($str, $options = array()) {
     // Make sure string is in UTF-8 and strip invalid UTF-8 characters
-    $str      = mb_convert_encoding((string) $str, 'UTF-8', mb_list_encodings());
+    $str = mb_convert_encoding((string) $str, 'UTF-8', mb_list_encodings());
     $defaults = array(
         'delimiter' => '-',
         'limit' => null,
@@ -142,7 +150,7 @@ function url_slug($str, $options = array()) {
         'transliterate' => false
     );
     // Merge options
-    $options  = array_merge($defaults, $options);
+    $options = array_merge($defaults, $options);
     $char_map = array(
         // Latin
         'À' => 'A',
@@ -435,7 +443,7 @@ function url_slug($str, $options = array()) {
         'ž' => 'z'
     );
     // Make custom replacements
-    $str      = preg_replace(array_keys($options['replacements']), $options['replacements'], $str);
+    $str = preg_replace(array_keys($options['replacements']), $options['replacements'], $str);
     // Transliterate characters to ASCII
     if ($options['transliterate']) {
         $str = str_replace(array_keys($char_map), $char_map, $str);
@@ -450,6 +458,7 @@ function url_slug($str, $options = array()) {
     $str = trim($str, $options['delimiter']);
     return $options['lowercase'] ? mb_strtolower($str, 'UTF-8') : $str;
 }
+
 function br2nl($st) {
     $breaks = array(
         "<br />",
@@ -458,6 +467,7 @@ function br2nl($st) {
     );
     return str_ireplace($breaks, "\r\n", $st);
 }
+
 function ToObject($array) {
     $object = new stdClass();
     foreach ($array as $key => $value) {
@@ -470,6 +480,7 @@ function ToObject($array) {
     }
     return $object;
 }
+
 function ToArray($obj) {
     if (is_object($obj))
         $obj = (array) $obj;
@@ -508,42 +519,39 @@ function PT_Secure($string, $censored_words = 1, $br = true) {
         $censored_words = @explode(",", $config['censored_words']);
         foreach ($censored_words as $censored_word) {
             $censored_word = trim($censored_word);
-            $string        = str_replace($censored_word, '****', $string);
+            $string = str_replace($censored_word, '****', $string);
         }
     }
     return $string;
 }
+
 function PT_IsLogged() {
     if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
         $id = PT_GetUserFromSessionID($_SESSION['user_id']);
         if (is_numeric($id) && !empty($id)) {
             return true;
         }
-    } 
-    
-    else if (!empty($_COOKIE['user_id']) && !empty($_COOKIE['user_id'])) {
+    } else if (!empty($_COOKIE['user_id']) && !empty($_COOKIE['user_id'])) {
         $id = PT_GetUserFromSessionID($_COOKIE['user_id']);
         if (is_numeric($id) && !empty($id)) {
             return true;
         }
-    } 
-
-    else {
+    } else {
         return false;
     }
 }
+
 function PT_GetUserFromSessionID($session_id, $platform = 'web') {
     global $db;
     if (empty($session_id)) {
         return false;
     }
-    $platform   = PT_Secure($platform);
+    $platform = PT_Secure($platform);
     $session_id = PT_Secure($session_id);
-    $return     = $db->where('session_id', $session_id);
-    $return     = $db->where('platform', $platform);
+    $return = $db->where('session_id', $session_id);
+    $return = $db->where('platform', $platform);
     return $db->getValue(T_SESSIONS, 'user_id');
 }
-
 
 function PT_GenerateKey($minlength = 20, $maxlength = 20, $uselower = true, $useupper = true, $usenumbers = true, $usespecial = false) {
     $charset = '';
@@ -570,31 +578,32 @@ function PT_GenerateKey($minlength = 20, $maxlength = 20, $uselower = true, $use
     }
     return $key;
 }
+
 function PT_Resize_Crop_Image($max_width, $max_height, $source_file, $dst_dir, $quality = 80) {
     $imgsize = @getimagesize($source_file);
-    $width   = $imgsize[0];
-    $height  = $imgsize[1];
-    $mime    = $imgsize['mime'];
+    $width = $imgsize[0];
+    $height = $imgsize[1];
+    $mime = $imgsize['mime'];
     switch ($mime) {
         case 'image/gif':
             $image_create = "imagecreatefromgif";
-            $image        = "imagegif";
+            $image = "imagegif";
             break;
         case 'image/png':
             $image_create = "imagecreatefrompng";
-            $image        = "imagepng";
+            $image = "imagepng";
             break;
         case 'image/jpeg':
             $image_create = "imagecreatefromjpeg";
-            $image        = "imagejpeg";
+            $image = "imagejpeg";
             break;
         default:
             return false;
             break;
     }
-    $dst_img    = @imagecreatetruecolor($max_width, $max_height);
-    $src_img    = $image_create($source_file);
-    $width_new  = $height * $max_width / $max_height;
+    $dst_img = @imagecreatetruecolor($max_width, $max_height);
+    $src_img = $image_create($source_file);
+    $width_new = $height * $max_width / $max_height;
     $height_new = $width * $max_height / $max_width;
     if ($width_new > $width) {
         $h_point = (($height - $height_new) / 2);
@@ -623,13 +632,14 @@ function PT_CompressImage($source_url, $destination_url, $quality) {
         @imagepng($image, $destination_url);
     }
 }
+
 function PT_Time_Elapsed_String($ptime) {
     global $pt, $lang;
     $etime = time() - $ptime;
     if ($etime < 1) {
         return '0 seconds';
     }
-    $a        = array(
+    $a = array(
         365 * 24 * 60 * 60 => $lang->year,
         30 * 24 * 60 * 60 => $lang->month,
         24 * 60 * 60 => $lang->day,
@@ -658,27 +668,30 @@ function PT_Time_Elapsed_String($ptime) {
         }
     }
 }
+
 function check_($check) {
     $siteurl = urlencode($_SERVER['SERVER_NAME']);
-    $file    = file_get_contents('http://www.playtubescript.com/purchase.php?code=' . $check . '&url=' . $siteurl);
-    $check   = json_decode($file, true);
+    $file = file_get_contents('http://www.playtubescript.com/purchase.php?code=' . $check . '&url=' . $siteurl);
+    $check = json_decode($file, true);
     return $check;
 }
+
 function check_success($check) {
     $siteurl = urlencode($_SERVER['SERVER_NAME']);
-    $file    = file_get_contents('http://www.playtubescript.com/purchase.php?code=' . $check . '&success=true&url=' . $siteurl);
-    $check   = json_decode($file, true);
+    $file = file_get_contents('http://www.playtubescript.com/purchase.php?code=' . $check . '&success=true&url=' . $siteurl);
+    $check = json_decode($file, true);
     return $check;
 }
+
 function PT_EditMarkup($text, $link = true) {
     if ($link == true) {
         $link_search = '/\[a\](.*?)\[\/a\]/i';
         if (preg_match_all($link_search, $text, $matches)) {
             foreach ($matches[1] as $match) {
-                $match_decode     = urldecode($match);
+                $match_decode = urldecode($match);
                 $match_decode_url = $match_decode;
-                $count_url        = mb_strlen($match_decode);
-                $match_url        = $match_decode;
+                $count_url = mb_strlen($match_decode);
+                $match_url = $match_decode;
                 if (!preg_match("/http(|s)\:\/\//", $match_decode)) {
                     $match_url = 'http://' . $match_url;
                 }
@@ -688,14 +701,15 @@ function PT_EditMarkup($text, $link = true) {
     }
     return $text;
 }
+
 function PT_Markup($text, $link = true) {
     if ($link == true) {
         $link_search = '/\[a\](.*?)\[\/a\]/i';
         if (preg_match_all($link_search, $text, $matches)) {
             foreach ($matches[1] as $match) {
-                $match_decode     = urldecode($match);
+                $match_decode = urldecode($match);
                 $match_decode_url = $match_decode;
-                $count_url        = mb_strlen($match_decode);
+                $count_url = mb_strlen($match_decode);
                 if ($count_url > 50) {
                     $match_decode_url = mb_substr($match_decode_url, 0, 30) . '....' . mb_substr($match_decode_url, 30, 20);
                 }
@@ -709,11 +723,12 @@ function PT_Markup($text, $link = true) {
     }
     return $text;
 }
+
 function covtime($youtube_time) {
     $start = new DateTime('@0'); // Unix epoch
     $start->add(new DateInterval($youtube_time));
     return $start->format('H:i:s');
-}   
+}
 
 function PT_CreateSession() {
     $hash = sha1(rand(1111, 9999));
@@ -724,6 +739,7 @@ function PT_CreateSession() {
     $_SESSION['hash_id'] = $hash;
     return $hash;
 }
+
 function PT_ShortText($text = "", $len = 100) {
     if (empty($text) || !is_string($text) || !is_numeric($len) || $len < 1) {
         return "****";
@@ -733,19 +749,22 @@ function PT_ShortText($text = "", $len = 100) {
     }
     return $text;
 }
+
 function PT_GetIdFromURL($url = false) {
     if (!$url) {
         return false;
     }
     $slug = @end(explode('_', $url));
-    $id   = 0;
+    $id = 0;
     $slug = explode('.', $slug);
-    $id   = (is_array($slug) && !empty($slug[0]) && is_numeric($slug[0])) ? $slug[0] : 0;
+    $id = (is_array($slug) && !empty($slug[0]) && is_numeric($slug[0])) ? $slug[0] : 0;
     return $id;
 }
+
 function PT_Decode($text = '') {
     return htmlspecialchars_decode($text);
 }
+
 function PT_Backup($sql_db_host, $sql_db_user, $sql_db_pass, $sql_db_name, $tables = false, $backup_name = false) {
     $mysqli = new mysqli($sql_db_host, $sql_db_user, $sql_db_pass, $sql_db_name);
     $mysqli->select_db($sql_db_name);
@@ -772,12 +791,12 @@ SET time_zone = \"+00:00\";\n
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;\n\n";
     foreach ($target_tables as $table) {
-        $result        = $mysqli->query('SELECT * FROM ' . $table);
+        $result = $mysqli->query('SELECT * FROM ' . $table);
         $fields_amount = $result->field_count;
-        $rows_num      = $mysqli->affected_rows;
-        $res           = $mysqli->query('SHOW CREATE TABLE ' . $table);
-        $TableMLine    = $res->fetch_row();
-        $content       = (!isset($content) ? '' : $content) . "
+        $rows_num = $mysqli->affected_rows;
+        $res = $mysqli->query('SHOW CREATE TABLE ' . $table);
+        $TableMLine = $res->fetch_row();
+        $content = (!isset($content) ? '' : $content) . "
 -- ---------------------------------------------------------
 --
 -- Table structure for table : `{$table}`
@@ -845,11 +864,11 @@ SET time_zone = \"+00:00\";\n
         @fclose($f);
     }
     $folder_name = "script_backups/" . date('d-m-Y') . '/' . time();
-    $put         = @file_put_contents($folder_name . '/SQL-Backup-' . time() . '-' . date('d-m-Y') . '.sql', $content);
+    $put = @file_put_contents($folder_name . '/SQL-Backup-' . time() . '-' . date('d-m-Y') . '.sql', $content);
     if ($put) {
         $rootPath = realpath('./');
-        $zip      = new ZipArchive();
-        $open     = $zip->open($folder_name . '/Files-Backup-' . time() . '-' . date('d-m-Y') . '.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip = new ZipArchive();
+        $open = $zip->open($folder_name . '/Files-Backup-' . time() . '-' . date('d-m-Y') . '.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
         if ($open !== true) {
             return false;
         }
@@ -857,7 +876,7 @@ SET time_zone = \"+00:00\";\n
         foreach ($files as $name => $file) {
             if (!preg_match('/\bscript_backups\b/', $file)) {
                 if (!$file->isDir()) {
-                    $filePath     = $file->getRealPath();
+                    $filePath = $file->getRealPath();
                     $relativePath = substr($filePath, strlen($rootPath) + 1);
                     $zip->addFile($filePath, $relativePath);
                 }
@@ -865,7 +884,7 @@ SET time_zone = \"+00:00\";\n
         }
         $zip->close();
         $table = T_CONFIG;
-        $date  = date('d-m-Y');
+        $date = date('d-m-Y');
         $mysqli->query("UPDATE `$table` SET `value` = '$date' WHERE `name` = 'last_backup'");
         $mysqli->close();
         return true;
@@ -873,20 +892,22 @@ SET time_zone = \"+00:00\";\n
         return false;
     }
 }
+
 function pt_size_format($bytes) {
     $size = array('1' => '0MB',
-                  '2000000' => '2MB',
-                  '6000000' => '6MB',
-                  '12000000' => '12MB',
-                  '24000000' => '24MB',
-                  '48000000' => '48MB',
-                  '96000000' => '96MB',
-                  '256000000' => '256MB',
-                  '512000000' => '512MB',
-                  '1000000000' => '1GB',
-                  '10000000000' => '10GB');
+        '2000000' => '2MB',
+        '6000000' => '6MB',
+        '12000000' => '12MB',
+        '24000000' => '24MB',
+        '48000000' => '48MB',
+        '96000000' => '96MB',
+        '256000000' => '256MB',
+        '512000000' => '512MB',
+        '1000000000' => '1GB',
+        '10000000000' => '10GB');
     return $size[$bytes];
 }
+
 // function pt_size_format($bytes) {
 //     $kb = 1024;
 //     $mb = $kb * 1024;
@@ -911,11 +932,11 @@ function pt_delete_field($id = false) {
     if (IS_LOGGED == false || !PT_IsAdmin()) {
         return false;
     }
-    $id    = PT_Secure($id);
+    $id = PT_Secure($id);
     $table = T_FIELDS;
     $query = mysqli_query($sqlConnect, "DELETE FROM `$table` WHERE `id` = {$id}");
     if ($query) {
-        $table  = T_USR_PROF_FIELDS;
+        $table = T_USR_PROF_FIELDS;
         $query2 = mysqli_query($sqlConnect, "ALTER TABLE `$table` DROP `fid_{$id}`;");
         if ($query2) {
             return true;
@@ -923,6 +944,7 @@ function pt_delete_field($id = false) {
     }
     return false;
 }
+
 function pt_is_url($url = false) {
     if (empty($url)) {
         return false;
@@ -932,6 +954,7 @@ function pt_is_url($url = false) {
     }
     return false;
 }
+
 function pt_get_user_ads($placement = 1) {
     global $pt, $db;
     $t_users = T_USERS;
@@ -946,26 +969,27 @@ function pt_get_user_ads($placement = 1) {
     //     $db->where(" `audience` LIKE '%$usr_country%' ");
     // }
     //$ad = $db->orderBy('RAND()')->getOne(T_USR_ADS);
-    $ad = $db->rawQuery("select * FROM ".T_USR_ADS." where (day_limit > day_spend OR day_limit = 0) AND placement = '".$placement."'  ORDER BY RAND() LIMIT 1");
+    $ad = $db->rawQuery("select * FROM " . T_USR_ADS . " where (day_limit > day_spend OR day_limit = 0) AND placement = '" . $placement . "'  ORDER BY RAND() LIMIT 1");
     if (!empty($ad) && !empty($ad[0])) {
         $ad = $ad[0];
     }
-    
+
     return (!empty($ad)) ? $ad : false;
 }
+
 function pt_register_ad_views($ad_id = false, $publisher_id = false) {
     global $pt, $db;
     if (empty($ad_id) || empty($publisher_id)) {
         return false;
     }
-    $ad     = $db->where('id', $ad_id)->getOne(T_USR_ADS);
+    $ad = $db->where('id', $ad_id)->getOne(T_USR_ADS);
     $result = false;
     if (!empty($ad)) {
-        $ad_owner     = $db->where('id', $ad->user_id)->getOne(T_USERS);
-        $con_price    = $pt->config->ad_v_price;
-        $pub_price    = $pt->config->pub_price;
-        $ad_trans     = false;
-        $is_owner     = false;
+        $ad_owner = $db->where('id', $ad->user_id)->getOne(T_USERS);
+        $con_price = $pt->config->ad_v_price;
+        $pub_price = $pt->config->pub_price;
+        $ad_trans = false;
+        $is_owner = false;
         $ad_tans_data = array(
             'results' => ($ad->results += 1)
         );
@@ -975,26 +999,24 @@ function pt_register_ad_views($ad_id = false, $publisher_id = false) {
         if (!array_key_exists($ad->id, $pt->user_ad_cons['uaid_'])) {
             $video_owner = $db->where('id', $publisher_id)->getOne(T_USERS);
             if ((($pt->config->usr_v_mon == 'on' && $pt->config->user_mon_approve == 'off') || ($pt->config->usr_v_mon == 'on' && $pt->config->user_mon_approve == 'on' && $video_owner->monetization == '1')) && $video_owner->video_mon == 1) {
-                
+
                 if (!empty($video_owner) && ($ad->user_id != $video_owner->id)) {
                     $db->where('id', $publisher_id)->update(T_USERS, array(
                         'balance' => (($video_owner->balance += $pub_price))
                     ));
-                    $db->insert(T_ADS_TRANS,array('amount' => $pub_price,'type' => 'video', 'ad_id' => $ad->id, 'video_owner' => $publisher_id, 'time' => time()));
-
+                    $db->insert(T_ADS_TRANS, array('amount' => $pub_price, 'type' => 'video', 'ad_id' => $ad->id, 'video_owner' => $publisher_id, 'time' => time()));
                 }
             }
-            $ad_tans_data['spent']              = ($ad->spent += $con_price);
-            $ad_trans                           = true;
+            $ad_tans_data['spent'] = ($ad->spent += $con_price);
+            $ad_trans = true;
             $pt->user_ad_cons['uaid_'][$ad->id] = $ad->id;
             setcookie('_uads', htmlentities(serialize($pt->user_ad_cons)), time() + (10 * 365 * 24 * 60 * 60), '/');
-            $db->insert(T_ADS_TRANS,array('amount' => $con_price ,'type' => 'spent', 'ad_id' => $ad->id, 'video_owner' => $publisher_id, 'time' => time()));
-
+            $db->insert(T_ADS_TRANS, array('amount' => $con_price, 'type' => 'spent', 'ad_id' => $ad->id, 'video_owner' => $publisher_id, 'time' => time()));
         }
-        
+
 
         $update = $db->where('id', $ad_id)->update(T_USR_ADS, $ad_tans_data);
-        
+
         if ($update && $ad_trans && !$is_owner) {
             $ad_value = ($ad_owner->wallet -= $con_price);
             if ($ad_value < 0) {
@@ -1005,24 +1027,25 @@ function pt_register_ad_views($ad_id = false, $publisher_id = false) {
             ));
             if ($ad->day_limit > 0) {
                 if ($ad->day == date("Y-m-d")) {
-                    $db->where('id',$ad->id)->update(T_USR_ADS,array('day_spend' => ($ad->day_spend + $con_price)));
-                }
-                else{
-                    $db->where('id',$ad->id)->update(T_USR_ADS,array('day_spend' => $con_price ,
-                                                                     'day'       => date("Y-m-d")));
+                    $db->where('id', $ad->id)->update(T_USR_ADS, array('day_spend' => ($ad->day_spend + $con_price)));
+                } else {
+                    $db->where('id', $ad->id)->update(T_USR_ADS, array('day_spend' => $con_price,
+                        'day' => date("Y-m-d")));
                 }
             }
-            
+
             $result = true;
         }
     }
     return $result;
 }
+
 function clear_cookies() {
     foreach ($_COOKIE as $key => $value) {
         setcookie($key, $value, time() - 10000, "/");
     }
 }
+
 function pt_url_domain($url) {
     $host = @parse_url($url, PHP_URL_HOST);
     if (!$host) {
@@ -1067,15 +1090,14 @@ function connect_to_url($url = '', $config = array()) {
     return $curl_response;
 }
 
-
-function verify_api_auth($user_id,$session_id, $platform = 'phone') {
+function verify_api_auth($user_id, $session_id, $platform = 'phone') {
     global $db;
     if (empty($session_id) || empty($user_id)) {
         return false;
     }
-    $platform   = PT_Secure($platform);
+    $platform = PT_Secure($platform);
     $session_id = PT_Secure($session_id);
-    $user_id    = PT_Secure($user_id);
+    $user_id = PT_Secure($user_id);
 
     $db->where('session_id', $session_id);
     $db->where('user_id', $user_id);
@@ -1083,16 +1105,15 @@ function verify_api_auth($user_id,$session_id, $platform = 'phone') {
     return ($db->getValue(T_SESSIONS, 'COUNT(*)') == 1);
 }
 
-function pt_vrequest_exists(){
-    global $db,$pt;
+function pt_vrequest_exists() {
+    global $db, $pt;
     if (!IS_LOGGED) {
         return false;
     }
 
-    $user    = $pt->user->id;
-    return ($db->where("user_id",$user)->getValue(T_VERIF_REQUESTS,"count(*)") > 0);
+    $user = $pt->user->id;
+    return ($db->where("user_id", $user)->getValue(T_VERIF_REQUESTS, "count(*)") > 0);
 }
-
 
 function pt_get_announcments() {
     global $pt, $db;
@@ -1100,36 +1121,34 @@ function pt_get_announcments() {
     //     return false;
     // }
 
-    $views_table  = T_ANNOUNCEMENT_VIEWS;
-    $table        = T_ANNOUNCEMENTS;
-    
+    $views_table = T_ANNOUNCEMENT_VIEWS;
+    $table = T_ANNOUNCEMENTS;
+
     if (IS_LOGGED) {
-        $user         = $pt->user->id;
-        $subsql       = "SELECT `announcement_id` FROM `$views_table` WHERE `user_id` = '{$user}'";
+        $user = $pt->user->id;
+        $subsql = "SELECT `announcement_id` FROM `$views_table` WHERE `user_id` = '{$user}'";
         $fetched_data = $db->where(" `active` = '1' AND `id` NOT IN ({$subsql}) ")->orderBy('RAND()')->getOne(T_ANNOUNCEMENTS);
-    }
-    else{
+    } else {
         $fetched_data = $db->where(" `active` = '1'")->orderBy('RAND()')->getOne(T_ANNOUNCEMENTS);
     }
     return $fetched_data;
 }
 
-
-function pt_is_banned($ip_address = false){
+function pt_is_banned($ip_address = false) {
     global $pt, $db;
     $table = T_BANNED_IPS;
     try {
-        $ip    = $db->where('ip_address',$ip_address,'=')->getValue($table,"count(*)");
+        $ip = $db->where('ip_address', $ip_address, '=')->getValue($table, "count(*)");
         return ($ip > 0);
     } catch (Exception $e) {
         return false;
     }
 }
 
-function pt_custom_design($a = false,$code = array()){
+function pt_custom_design($a = false, $code = array()) {
     global $pt;
-    $theme       = $pt->config->theme;
-    $data        = array();
+    $theme = $pt->config->theme;
+    $data = array();
     $custom_code = array(
         "themes/$theme/js/header.js",
         "themes/$theme/js/footer.js",
@@ -1140,31 +1159,26 @@ function pt_custom_design($a = false,$code = array()){
         foreach ($custom_code as $key => $filepath) {
             if (is_readable($filepath)) {
                 $data[$key] = file_get_contents($filepath);
-            }
-            else{
+            } else {
                 $data[$key] = "/* \n Error found while loading: Permission denied in $filepath \n*/";
-            } 
+            }
         }
-    }
-
-    else if($a == 'save' && !empty($code)){
+    } else if ($a == 'save' && !empty($code)) {
         foreach ($code as $key => $content) {
             $filepath = $custom_code[$key];
 
             if (is_writable($filepath)) {
-                @file_put_contents($custom_code[$key],$content);
-            }
-
-            else{
+                @file_put_contents($custom_code[$key], $content);
+            } else {
                 $data[$key] = "Permission denied: $filepath is not writable";
-            } 
-        }     
+            }
+        }
     }
-    
+
     return $data;
 }
 
-function pt_notify($data = array()){
+function pt_notify($data = array()) {
     global $pt, $db;
     if (empty($data) || !is_array($data)) {
         return false;
@@ -1174,57 +1188,55 @@ function pt_notify($data = array()){
     }
 
     $t_notif = T_NOTIFICATIONS;
-    $query   = $db->insert($t_notif,$data);
+    $query = $db->insert($t_notif, $data);
     if ($pt->config->push == 1) {
         PT_NotificationWebPushNotifier();
     }
     return $query;
 }
 
-function pt_get_notification($args = array()){
+function pt_get_notification($args = array()) {
     global $pt, $db;
-    $options  = array(
+    $options = array(
         "recipient_id" => 0,
         "type" => null,
     );
 
-    $args         = array_merge($options, $args);
+    $args = array_merge($options, $args);
     $recipient_id = $args['recipient_id'];
-    $type         = $args['type'];
-    $data         = array();
-    $t_notif      = T_NOTIFICATIONS;
+    $type = $args['type'];
+    $data = array();
+    $t_notif = T_NOTIFICATIONS;
 
-    $db->where('recipient_id',$recipient_id);
+    $db->where('recipient_id', $recipient_id);
     if ($type == 'new') {
-        $data = $db->where('seen',0)->getValue($t_notif,'count(*)');
-    }
-
-    else{
-        $query      = $db->orderBy('id','DESC')->get($t_notif,20);
+        $data = $db->where('seen', 0)->getValue($t_notif, 'count(*)');
+    } else {
+        $query = $db->orderBy('id', 'DESC')->get($t_notif, 20);
         foreach ($query as $notif_data_row) {
             $data[] = ToArray($notif_data_row);
-        } 
+        }
     }
 
-    $db->where('recipient_id',$recipient_id);
-    $db->where('time',(time() - 432000));
-    $db->where('seen',0,'>');
+    $db->where('recipient_id', $recipient_id);
+    $db->where('time', (time() - 432000));
+    $db->where('seen', 0, '>');
     $db->delete($t_notif);
 
     return $data;
 }
 
-function ffmpeg_duration($filename = false){
+function ffmpeg_duration($filename = false) {
     global $pt;
 
     $ffmpeg_b = $pt->config->ffmpeg_binary_file;
-    $output   = shell_exec("$ffmpeg_b -i {$filename} 2>&1");
-    $ptrn     = '/Duration: ([0-9]{2}):([0-9]{2}):([^ ,])+/';
-    $time     = 30;
+    $output = shell_exec("$ffmpeg_b -i {$filename} 2>&1");
+    $ptrn = '/Duration: ([0-9]{2}):([0-9]{2}):([^ ,])+/';
+    $time = 30;
     if (preg_match($ptrn, $output, $matches)) {
         $time = str_replace("Duration: ", "", $matches[0]);
         $time_breakdown = explode(":", $time);
-        $time = round(($time_breakdown[0]*60*60) + ($time_breakdown[1]*60) + $time_breakdown[2]);
+        $time = round(($time_breakdown[0] * 60 * 60) + ($time_breakdown[1] * 60) + $time_breakdown[2]);
     }
 
     return $time;
@@ -1248,7 +1260,6 @@ function http_respond($data = array()) {
     ob_flush();
     flush();
 }
-
 
 function get_ip_address() {
     if (!empty($_SERVER['HTTP_CLIENT_IP']) && filter_var($_SERVER['HTTP_CLIENT_IP'], FILTER_VALIDATE_IP)) {
@@ -1279,12 +1290,12 @@ function get_ip_address() {
 
 function pt_db_langs() {
     global $pt, $db;
-    $data   = array();
+    $data = array();
     $t_lang = T_LANGS;
     try {
-        $query  = $db->rawQuery("DESCRIBE `$t_lang`");
+        $query = $db->rawQuery("DESCRIBE `$t_lang`");
     } catch (Exception $e) {
-
+        
     }
     foreach ($query as $column) {
         $data[] = $column->Field;
@@ -1299,12 +1310,12 @@ function pt_db_langs() {
 
 function pt_get_langs($lang = 'english') {
     global $pt, $db;
-    $data   = array();
+    $data = array();
     $t_lang = T_LANGS;
     try {
-        $query  = $db->rawQuery("SELECT `lang_key`, `$lang` FROM `$t_lang`");
+        $query = $db->rawQuery("SELECT `lang_key`, `$lang` FROM `$t_lang`");
     } catch (Exception $e) {
-
+        
     }
 
     foreach ($query as $item) {
@@ -1313,20 +1324,22 @@ function pt_get_langs($lang = 'english') {
 
     return $data;
 }
+
 function PT_Duration($text) {
     $duration_search = '/\[d\](.*?)\[\/d\]/i';
 
     if (preg_match_all($duration_search, $text, $matches)) {
         foreach ($matches[1] as $match) {
             $time = explode(":", $match);
-            $current_time = ($time[0]*60)+$time[1];
-            $text = str_replace('[d]' . $match . '[/d]', '<a  class="hash" href="javascript:void(0)" onclick="go_to_duration('.$current_time.')">' . $match . '</a>', $text);
+            $current_time = ($time[0] * 60) + $time[1];
+            $text = str_replace('[d]' . $match . '[/d]', '<a  class="hash" href="javascript:void(0)" onclick="go_to_duration(' . $current_time . ')">' . $match . '</a>', $text);
         }
     }
     return $text;
 }
+
 function PT_NotificationWebPushNotifier() {
-    global $sqlConnect, $pt,$db;
+    global $sqlConnect, $pt, $db;
 
     if (IS_LOGGED == false) {
         return false;
@@ -1334,15 +1347,15 @@ function PT_NotificationWebPushNotifier() {
     if ($pt->config->push == 0) {
         return false;
     }
-    $user_id   =  PT_Secure($pt->user->id);
-    $to_ids    = array();
-    $notifications = $db->where('notifier_id',$user_id)->where('seen',0)->where('sent_push',0)->where('type','admin_notification','<>')->orderBy('id','DESC')->get(T_NOTIFICATIONS);
+    $user_id = PT_Secure($pt->user->id);
+    $to_ids = array();
+    $notifications = $db->where('notifier_id', $user_id)->where('seen', 0)->where('sent_push', 0)->where('type', 'admin_notification', '<>')->orderBy('id', 'DESC')->get(T_NOTIFICATIONS);
     if (!empty($notifications)) {
         foreach ($notifications as $key => $notify) {
             $notification_id = $notify->id;
-            $to_id           = $notify->recipient_id;
-            $to_data         = PT_UserData($notify->recipient_id);
-            $ids             = '';
+            $to_id = $notify->recipient_id;
+            $to_data = PT_UserData($notify->recipient_id);
+            $ids = '';
             if (!empty($to_data->device_id)) {
                 $ids = array($to_data->device_id);
             }
@@ -1360,90 +1373,130 @@ function PT_NotificationWebPushNotifier() {
             $notify->type_text = '';
             $notificationText = $notify->text;
             if (!empty($notify->type)) {
-                $notify->type_text  = $pt->notif_data[$notify->type]['text'];
+                $notify->type_text = $pt->notif_data[$notify->type]['text'];
             }
-            $send_array['notification']['notification_content']     = $notify->type_text;
+            $send_array['notification']['notification_content'] = $notify->type_text;
             $send_array['notification']['notification_data']['url'] = $notify->url;
             $send_array['notification']['notification_data']['user_data'] = PT_UserData($user_id);
-            $send_array['notification']['notification_data']['video']  = '';
+            $send_array['notification']['notification_data']['video'] = '';
             if (!empty($notify->video_id)) {
-                $send_array['notification']['notification_data']['video'] = PT_GetVideoByID($notify->video_id,0,1,2);
+                $send_array['notification']['notification_data']['video'] = PT_GetVideoByID($notify->video_id, 0, 1, 2);
             }
             $send_array['notification']['notification_data']['notification_info'] = $notify;
-            $send       = PT_SendPushNotification($send_array, 'native');
-            
+            $send = PT_SendPushNotification($send_array, 'native');
         }
-        $query_get_messages_for_push = $db->where('notifier_id',$user_id)->where('sent_push',0)->update(T_NOTIFICATIONS,array('sent_push' => 1)); 
+        $query_get_messages_for_push = $db->where('notifier_id', $user_id)->where('sent_push', 0)->update(T_NOTIFICATIONS, array('sent_push' => 1));
     }
     return true;
 }
 
 function getBrowser() {
-      $u_agent = $_SERVER['HTTP_USER_AGENT'];
-      $bname = 'Unknown';
-      $platform = 'Unknown';
-      $version= "";
-      // First get the platform?
-      if (preg_match('/macintosh|mac os x/i', $u_agent)) {
+    $u_agent = $_SERVER['HTTP_USER_AGENT'];
+    $bname = 'Unknown';
+    $platform = 'Unknown';
+    $version = "";
+    // First get the platform?
+    if (preg_match('/macintosh|mac os x/i', $u_agent)) {
         $platform = 'mac';
-      } elseif (preg_match('/windows|win32/i', $u_agent)) {
+    } elseif (preg_match('/windows|win32/i', $u_agent)) {
         $platform = 'windows';
-      } elseif (preg_match('/iphone|IPhone/i', $u_agent)) {
+    } elseif (preg_match('/iphone|IPhone/i', $u_agent)) {
         $platform = 'IPhone Web';
-      } elseif (preg_match('/android|Android/i', $u_agent)) {
+    } elseif (preg_match('/android|Android/i', $u_agent)) {
         $platform = 'Android Web';
-      } else if (preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $u_agent)) {
+    } else if (preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $u_agent)) {
         $platform = 'Mobile';
-      } else if (preg_match('/linux/i', $u_agent)) {
+    } else if (preg_match('/linux/i', $u_agent)) {
         $platform = 'linux';
-      }
-      // Next get the name of the useragent yes seperately and for good reason
-      if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent)) {
+    }
+    // Next get the name of the useragent yes seperately and for good reason
+    if (preg_match('/MSIE/i', $u_agent) && !preg_match('/Opera/i', $u_agent)) {
         $bname = 'Internet Explorer';
         $ub = "MSIE";
-      } elseif(preg_match('/Firefox/i',$u_agent)) {
+    } elseif (preg_match('/Firefox/i', $u_agent)) {
         $bname = 'Mozilla Firefox';
         $ub = "Firefox";
-      } elseif(preg_match('/Chrome/i',$u_agent)) {
+    } elseif (preg_match('/Chrome/i', $u_agent)) {
         $bname = 'Google Chrome';
         $ub = "Chrome";
-      } elseif(preg_match('/Safari/i',$u_agent)) {
+    } elseif (preg_match('/Safari/i', $u_agent)) {
         $bname = 'Apple Safari';
         $ub = "Safari";
-      } elseif(preg_match('/Opera/i',$u_agent)) {
+    } elseif (preg_match('/Opera/i', $u_agent)) {
         $bname = 'Opera';
         $ub = "Opera";
-      } elseif(preg_match('/Netscape/i',$u_agent)) {
+    } elseif (preg_match('/Netscape/i', $u_agent)) {
         $bname = 'Netscape';
         $ub = "Netscape";
-      }
-      // finally get the correct version number
-      $known = array('Version', $ub, 'other');
-      $pattern = '#(?<browser>' . join('|', $known) . ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
-      if (!preg_match_all($pattern, $u_agent, $matches)) {
+    }
+    // finally get the correct version number
+    $known = array('Version', $ub, 'other');
+    $pattern = '#(?<browser>' . join('|', $known) . ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
+    if (!preg_match_all($pattern, $u_agent, $matches)) {
         // we have no matching number just continue
-      }
-      // see how many we have
-      $i = count($matches['browser']);
-      if ($i != 1) {
+    }
+    // see how many we have
+    $i = count($matches['browser']);
+    if ($i != 1) {
         //we will have two since we are not using 'other' argument yet
         //see if version is before or after the name
-        if (strripos($u_agent,"Version") < strripos($u_agent,$ub)){
-          $version= $matches['version'][0];
+        if (strripos($u_agent, "Version") < strripos($u_agent, $ub)) {
+            $version = $matches['version'][0];
         } else {
-          $version= $matches['version'][1];
+            $version = $matches['version'][1];
         }
-      } else {
-        $version= $matches['version'][0];
-      }
-      // check if we have a number
-      if ($version==null || $version=="") {$version="?";}
-      return array(
-          'userAgent' => $u_agent,
-          'name'      => $bname,
-          'version'   => $version,
-          'platform'  => $platform,
-          'pattern'    => $pattern,
-          'ip_address' => get_ip_address()
-      );
+    } else {
+        $version = $matches['version'][0];
+    }
+    // check if we have a number
+    if ($version == null || $version == "") {
+        $version = "?";
+    }
+    return array(
+        'userAgent' => $u_agent,
+        'name' => $bname,
+        'version' => $version,
+        'platform' => $platform,
+        'pattern' => $pattern,
+        'ip_address' => get_ip_address()
+    );
 }
+
+//Start Upgrade System
+//version relate code start
+
+function PT_GetVersionInfo() {
+
+    global $pt;
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_SSL_VERIFYHOST => 0,
+        CURLOPT_SSL_VERIFYPEER => 0,
+        CURLOPT_TIMEOUT => 150,
+        CURLOPT_URL => $pt->version_update_info,
+        CURLOPT_POST => 1,
+        CURLOPT_POSTFIELDS => array(
+            'update_info' => 'true',
+            'current_version' => $pt->script_version
+        )
+    ));
+
+    $result = curl_exec($curl);
+    $error = '';
+    if (!$curl || !$result) {
+        $error = 'Curl Error - Contact your hosting provider with the following error as reference: Error: "' . curl_error($curl) . '" - Code: ' . curl_errno($curl);
+    }
+
+    curl_close($curl);
+
+    if ($error != '') {
+        return $error;
+    }
+    if ($result) {
+        return $result = json_decode($result, true);
+    }
+}
+
+//version relate code end
+//End Upgrade System
