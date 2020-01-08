@@ -429,3 +429,9 @@ $pt->version_update_info = 'http://localhost/bonani/videos.poppinme.Upgrade/upgr
 $pt->version_download_url = 'http://localhost/bonani/videos.poppinme.Upgrade/upgrade_system/download.php';
 $pt->version_info = PT_GetVersionInfo();
 //End => Upgrade System 
+
+//Start => Upgrade System 
+//$pt->version_update_info = 'http://mierp.co/upgrade_system/MiPlaytube/repository/update_version_info.php';
+//$pt->version_download_url = 'http://mierp.co/upgrade_system/MiPlaytube/repository/download.php';
+//$pt->version_info = PT_GetVersionInfo();
+//End => Upgrade System 

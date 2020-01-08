@@ -102,9 +102,9 @@ if ($f == 'run_updater') {
             'Failed to open downloaded zip file',
         ));
     }
-    if (file_exists('update.php')) {
+    if (file_exists('run_update.php')) {
 
-        $file = file_get_contents($site_url . "/update.php?updated", false, stream_context_create($arrContextOptions));
+        $file = file_get_contents($site_url . "/run_update.php?updated", false, stream_context_create($arrContextOptions));
         $data['status'] = 200;
     }
     header("Content-type: application/json");
